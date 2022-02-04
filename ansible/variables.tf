@@ -17,3 +17,6 @@ variable "address_space" {
 variable "vm_count" {
   type = string
 }
+
+variable "ansible_vms" {
+}

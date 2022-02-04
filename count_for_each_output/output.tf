@@ -25,11 +25,3 @@ output "vnet_name" {
 output "network_interface_id" {
   value = flatten([values(module.azure_network_interface)[*].network_interface_id_output])
 }
-
-# output "network_interface_id" {
-#   value = module.azure_network_interface[*].network_interface_id_output
-# }
-
-# output "network_interface_id" {
-#   value = module.azure_network_interface[*].network_interface_id_output
-# }
