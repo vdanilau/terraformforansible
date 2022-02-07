@@ -72,10 +72,31 @@ module "azure_linux_vm" {
     depends_on          = [module.azure_network_interface]
 }
 
-module "azure_nsg" {
-    source = "../modules/azure_nsg"
-    name = "${var.infrastructure_name}-nsg-${var.index}"
+module "azure_nsg_vm" {
+    source = "../modules/azure_nsg_with_sr"
+    name = "${var.infrastructure_name}-nsg-vm-${var.index}"
     location = var.location
-    nsg_rule = var.nsg_rule
+    nsg_rule = var.nsg_rule_vm
     resource_group_name = module.azure_resource_group.rg_name_output
 }
+
+module "azure_nsg_db" {
+    source              = "../modules/azure_nsg_with_sr"
+    name                = "${var.infrastructure_name}-nsg-db-${var.index}"
+    location            = var.location
+    nsg_rule            = var.nsg_rule_db
+    resource_group_name = module.azure_resource_group.rg_name_output
+}
+# module "azure_nsg_db" {
+#     source = "../modules/azure_nsg"
+#     name = var.nsg_rules
+#     location = var.location
+#     resource_group_name = module.azure_resource_group.rg_name_output
+# }
+
+# module "azure_nsg_rule_db"{
+#     source = "../modules/azure_nsg"
+#     for_each = var.nsg_rules
+# }
+
+

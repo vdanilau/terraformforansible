@@ -22,7 +22,11 @@ variable "ansible_vms" {
 
 }
 
-variable "nsg_rule" {
+variable "nsg_rule_vm" {
+  
+}
+
+variable "nsg_rule_db" {
   
 }
 

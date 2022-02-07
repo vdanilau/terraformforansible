@@ -1,6 +1,6 @@
-output "azure_nsg_id_output" {
-  value = azurerm_network_security_group.azure_nsg.id
-}
+# output "network_interface_id_output" {
+#   value = azurerm_network_interface.nic.*.id
+# }
 
 # output "network_interface_id_output" {
 #   value = azurerm_network_interface.nic[*].id

@@ -37,7 +37,7 @@ ansible_vms = [
     }
 ]
 
-nsg_rule = [
+nsg_rule_vm = [
     {
       name                       = "allow_inbound_ssh",
       priority                   = "100",
@@ -51,6 +51,32 @@ nsg_rule = [
     },
     {
       name                       = "test1234"
+      priority                   = "105"
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    }
+]
+
+nsg_rule_db = [
+    {
+      network_security_group_name = "nsg_db"
+      name                       = "allow_inbound_msql",
+      priority                   = "443",
+      direction                  = "Inbound",
+      access                     = "Allow",
+      protocol                   = "TCP",
+      source_port_range          = "*",
+      destination_port_range     = "443",
+      source_address_prefix      = "*",
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "tnsg_db"
       priority                   = "105"
       direction                  = "Inbound"
       access                     = "Allow"

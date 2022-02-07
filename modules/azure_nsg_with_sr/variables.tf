@@ -10,6 +10,6 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "nsg_rules" {
+variable "nsg_rule" {
   
 }
