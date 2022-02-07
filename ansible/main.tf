@@ -66,7 +66,38 @@ module "azure_linux_vm" {
     for_each            = { for x in var.ansible_vms : x.instance_name => x }
     name                = lookup(each.value, "instance_name")
     location            = var.location
+    vm_size             = lookup(each.value, "vm_size")
     nic_id              = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${module.azure_resource_group.rg_name_output}/providers/Microsoft.Network/networkInterfaces/${var.infrastructure_name}-nic-${var.index}-${lookup(each.value, "instance_name")}"
     resource_group_name = module.azure_resource_group.rg_name_output
     depends_on          = [module.azure_network_interface]
+}
+
+# module "azure_nsg" {
+#     source = "../modules/azure_nsg"
+#     name = "${var.infrastructure_name}-nsg-${var.index}"
+#     location = var.location
+#     security_rule = var.nsg_rule
+#     resource_group_name = module.azure_resource_group.rg_name_output
+# }
+
+resource "azurerm_network_security_group" "azure_nsg" {
+  name                = "${var.infrastructure_name}-nsg-${var.index}"
+  location            = var.location
+  resource_group_name = module.azure_resource_group.rg_name_output
+
+  dynamic "security_rule" {
+    for_each = var.nsg_rule
+    iterator = set
+    content {
+    name                       = set.value["name"]
+    priority                   = set.value["priority"]
+    direction                  = set.value["direction"]
+    access                     = set.value["access"]
+    protocol                   = set.value["protocol"]
+    source_port_range          = set.value["source_port_range"]
+    destination_port_range     = set.value["destination_port_range"]
+    source_address_prefix      = set.value["source_address_prefix"]
+    destination_address_prefix = set.value["destination_address_prefix"]
+    }
+  }
 }

@@ -10,10 +10,6 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "nic_id" {
-  type = string
-}
-
-variable "vm_size" {
-  type = string
+variable "nsg_rule" {
+  
 }

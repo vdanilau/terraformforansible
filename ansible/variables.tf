@@ -19,4 +19,13 @@ variable "vm_count" {
 }
 
 variable "ansible_vms" {
+
 }
+
+variable "nsg_rule" {
+  
+}
+
+# variable "security_rule" {
+  
+# }
