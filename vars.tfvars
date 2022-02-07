@@ -13,6 +13,12 @@ location = "eastus2"
 address_space = ["10.0.0.0/16"]
 vm_count = 3
 
+subnets = [
+    {
+      
+    }
+]
+
 ansible_vms = [
     {
       "instance_name" = "ansible-master"
@@ -45,7 +51,7 @@ nsg_rule_vm = [
       access                     = "Allow",
       protocol                   = "TCP",
       source_port_range          = "*",
-      destination_port_range     = "443",
+      destination_port_range     = "22",
       source_address_prefix      = "*",
       destination_address_prefix = "*"
     },
