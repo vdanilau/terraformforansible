@@ -87,6 +87,18 @@ module "azure_nsg_db" {
     nsg_rule            = var.nsg_rule_db
     resource_group_name = module.azure_resource_group.rg_name_output
 }
+
+resource "azurerm_subnet_network_security_group_association" "vm_subnet_to_nsg" {
+  subnet_id                 = module.azure_subnet.subnet_id_output
+  network_security_group_id = module.azure_nsg_vm.nsg_id_output
+}
+
+# module "azure_nsg" {
+#     source              = "../modules/azure_nsg"   
+#     name                = var.nsg_rules
+#     location            = var.location
+#     resource_group_name = module.azure_resource_group.rg_name_output
+# }
 # module "azure_nsg_db" {
 #     source = "../modules/azure_nsg"
 #     name = var.nsg_rules
