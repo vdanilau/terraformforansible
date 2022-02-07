@@ -72,32 +72,10 @@ module "azure_linux_vm" {
     depends_on          = [module.azure_network_interface]
 }
 
-# module "azure_nsg" {
-#     source = "../modules/azure_nsg"
-#     name = "${var.infrastructure_name}-nsg-${var.index}"
-#     location = var.location
-#     security_rule = var.nsg_rule
-#     resource_group_name = module.azure_resource_group.rg_name_output
-# }
-
-resource "azurerm_network_security_group" "azure_nsg" {
-  name                = "${var.infrastructure_name}-nsg-${var.index}"
-  location            = var.location
-  resource_group_name = module.azure_resource_group.rg_name_output
-
-  dynamic "security_rule" {
-    for_each = var.nsg_rule
-    iterator = set
-    content {
-    name                       = set.value["name"]
-    priority                   = set.value["priority"]
-    direction                  = set.value["direction"]
-    access                     = set.value["access"]
-    protocol                   = set.value["protocol"]
-    source_port_range          = set.value["source_port_range"]
-    destination_port_range     = set.value["destination_port_range"]
-    source_address_prefix      = set.value["source_address_prefix"]
-    destination_address_prefix = set.value["destination_address_prefix"]
-    }
-  }
+module "azure_nsg" {
+    source = "../modules/azure_nsg"
+    name = "${var.infrastructure_name}-nsg-${var.index}"
+    location = var.location
+    nsg_rule = var.nsg_rule
+    resource_group_name = module.azure_resource_group.rg_name_output
 }

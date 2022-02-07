@@ -51,7 +51,7 @@ nsg_rule = [
     },
     {
       name                       = "test1234"
-      priority                   = 105
+      priority                   = "105"
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "Tcp"
@@ -60,16 +60,4 @@ nsg_rule = [
       source_address_prefix      = "*"
       destination_address_prefix = "*"
     }
-  ]
-
-# nsg_rules = [
-#         "allow_inbound_ssh",
-#         "100",
-#         "Inbound",
-#         "Allow",
-#         "TCP",
-#         "*",
-#         ["443"],
-#         "*",
-#         "*"
-# ]
+]
