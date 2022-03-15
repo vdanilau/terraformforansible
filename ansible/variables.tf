@@ -30,6 +30,14 @@ variable "nsg_rule_db" {
   
 }
 
+variable "allocation_method" {
+  
+}
+
+# variable "user_data" {
+  
+# }
+
 # variable "security_rule" {
   
 # }

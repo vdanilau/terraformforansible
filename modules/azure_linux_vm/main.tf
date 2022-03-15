@@ -7,6 +7,7 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
   admin_password                  = "adminadmin1234!"
   network_interface_ids           = [var.nic_id]
   disable_password_authentication = false
+  user_data                       = var.user_data
 
   os_disk {
     caching              = "ReadWrite"

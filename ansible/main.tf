@@ -48,6 +48,7 @@ module "azure_public_ip" {
     source              = "../modules/azure_public_ip"
     name                = "${var.infrastructure_name}-pip-${var.index}"
     location            = var.location
+    allocation_method   = var.allocation_method
     resource_group_name = module.azure_resource_group.rg_name_output
 }
 
@@ -61,6 +62,116 @@ module "azure_network_interface" {
     public_ip_address_id = lookup(each.value, "public_access") == true ? module.azure_public_ip.puplic_ip_id_output : ""
 }
 
+# locals {
+#   ansible_master = yamlencode({
+#     write_files = [
+#       {
+#         encoding = "b64"
+#         content  = filebase64("../ansible/files/anskey")
+#         owner    = "adminuser:adminuser"
+#         permissions = "400"
+#         path     = "~/.ssh/anskey"
+#       }
+#     ]
+#   })
+# }
+
+locals {
+  ansible_master = yamlencode({
+    write_files = [
+      {
+        encoding = "b64"
+      },
+      {
+        # content  = filebase64("../ansible/files/anskey")
+        # content  = file("../ansible/files/anskey")
+        content  = file("../ansible/files/copy-key.ps1")
+      },
+      {
+        path = "/etc/nginx/sites-available/default"
+        # owner    = "adminuser:adminuser"
+        # permissions = "400"
+        # path     = "~/.ssh/anskey"
+      }
+    ]
+  })
+}
+
+locals {
+  ansible_node = yamlencode({
+    write_files = [
+      {
+        encoding = "b64"
+        content  = filebase64("../ansible/files/anskey.pub")
+        # content  = file("../ansible/files/anskey.pub")
+        # content  = file("../ansible/files/copy-key.ps1")
+        path = "/etc//default"
+        # owner    = "adminuser:adminuser"
+        # permissions = "400"
+        # path     = "~/.ssh/authorized_keys"
+      }
+    ]
+  })
+}
+
+# output "ansible_master" {
+#   value = local.ansible_master
+# }
+
+data "template_cloudinit_config" "config" {
+  gzip          = true
+  base64_encode = true
+
+  # Main cloud-config configuration file.
+  part {
+    content_type = "text/cloud-config"
+    content      = "packages: ['httpie']"
+  }
+}
+
+output "template_cloudinit" {
+    value = data.template_cloudinit_config.config
+}
+
+data "template_cloudinit_config" "config_cert" {
+  gzip          = false
+  base64_encode = true
+
+  # Main cloud-config configuration file.
+  part {
+    content_type = "text/cloud-config"
+    content      = file("files/anskey")
+  }
+}
+
+output "template_cloudinit_cert" {
+    value = data.template_cloudinit_config.config_cert
+}
+
+# locals {
+#   cloud_config_config = <<-END
+#     #cloud-config
+#     ${jsonencode({
+#       write_files = [
+#         {
+#           path        = "/etc/index.html"
+#           permissions = "0644"
+#           owner       = "root:root"
+#           encoding    = "b64"
+#           content     = filebase64("${path.module}/index.html")
+#         },
+#       ]
+#     })}
+#   END
+# }
+
+# locals {
+#     ansible_master = for p in var.ansible_vms
+# }
+
+    #   sce     = lookup(each.value, "instance_name") == "ansible-master" ?  "./files/anskey" : "./files/anskey.pub"
+    #   destination = lookup(each.value, "instance_name") == "ansible-master" ? "~/.ssh/anskey" : "~/.ssh/authorized_keys"our
+
 module "azure_linux_vm" {
     source              = "../modules/azure_linux_vm"
     for_each            = { for x in var.ansible_vms : x.instance_name => x }
@@ -68,7 +179,11 @@ module "azure_linux_vm" {
     location            = var.location
     vm_size             = lookup(each.value, "vm_size")
     nic_id              = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${module.azure_resource_group.rg_name_output}/providers/Microsoft.Network/networkInterfaces/${var.infrastructure_name}-nic-${var.index}-${lookup(each.value, "instance_name")}"
-    resource_group_name = module.azure_resource_group.rg_name_output
+    resource_group_name = module.azure_resource_group.rg_name_output  
+    # user_data = lookup(each.value, "instance_name") == "ansible-master" ? local.ansible_master : local.ansible_node
+    # user_data = filebase64(data.template_cloudinit_config.config_cert)
+    # user_data = filebase64("files/anskey")
+    user_data = filebase64()
     depends_on          = [module.azure_network_interface]
 }
 

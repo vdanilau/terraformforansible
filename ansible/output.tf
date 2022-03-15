@@ -26,6 +26,10 @@ output "network_interface_id" {
   value = flatten([values(module.azure_network_interface)[*].network_interface_id_output])
 }
 
+output "puplic_ip" {
+  value = module.azure_public_ip.puplic_ip_ip_address_output
+}
+
 # output "network_interface_id" {
 #   value = module.azure_network_interface[*].network_interface_id_output
 # }

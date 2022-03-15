@@ -17,3 +17,7 @@ variable "nic_id" {
 variable "vm_size" {
   type = string
 }
+
+variable "user_data" {
+  
+}

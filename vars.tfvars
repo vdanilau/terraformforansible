@@ -11,6 +11,7 @@ index = "01"
 infrastructure_name = "sdtest"
 location = "eastus2"
 address_space = ["10.0.0.0/16"]
+allocation_method = "Dynamic"
 vm_count = 3
 
 subnets = [
@@ -63,6 +64,28 @@ nsg_rule_vm = [
       protocol                   = "Tcp"
       source_port_range          = "*"
       destination_port_range     = "51"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "allow_outbound_80"
+      priority                   = "110"
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "80"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "allow_outbound_22"
+      priority                   = "105"
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "22"
       source_address_prefix      = "*"
       destination_address_prefix = "*"
     }
